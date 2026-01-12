@@ -9,14 +9,16 @@ load_dotenv()
 
 # --- CONFIGURAÇÕES ---
 # RECOMENDAÇÃO: Use variáveis de ambiente para esconder isso no PythonAnywhere
-my_email = os.getenv("EMAIL_USER")
+my_email = os.getenv("EMAIL_USER") # Por meio da variavel de ambiente, certifique-se que o código .env possa esconder tudo, juntamente ao .gitignore
 password = os.getenv("EMAIL_PASSWORD") # Gere uma nova senha de app!
-DESTINATARIOS = ["luanjsferreira@gmail.com", "luan.jywago@sempreceub.com"]
+DESTINATARIOS = ["luanjsferreira@gmail.com", "luan.jywago@sempreceub.com"] # Escreva o email dos destinatários interessados
 
+# Teste para ver se o email e senha estão presentes na variável de ambiente
 if not my_email or not password:
-    print("Erro nas varipaveis de ambiente não configuradas ou tentativa de uso de email e senha.")
+    print("Erro nas variáveis de ambiente não configuradas ou tentativa de uso de email e senha.")
     exit()
 
+# Função para enviar email pelo SMTP com a mensagem do corpo do email
 def enviar_email(campeonato, adversario):
     msg = EmailMessage() 
     msg['Subject'] = f"HOJE TEM FLAMENGO! 🔴⚫"
@@ -47,6 +49,7 @@ def enviar_email(campeonato, adversario):
     except Exception as e:
         print(f"Erro ao enviar email: {e}")
         
+# Função para verificar se tem jogo no dia e mes atual, definindo como parecer numérico de acordo com a data atual (datetime.now())
 def verificar_jogo():
     hoje = datetime.now()
     dia_atual = hoje.strftime("%d")
@@ -70,7 +73,6 @@ def verificar_jogo():
     jogo_encontrado = False # Variável para controlar se achou jogo
     
     try:
-        # CORREÇÃO: encoding 'utf-8' (estava utg-8)
         with open('datas.csv', mode='r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             
@@ -81,7 +83,6 @@ def verificar_jogo():
                 
                 if dia_csv == dia_atual and mes_csv == mes_atual:
                     print(f"Jogo encontrado: Contra {linha['adversario']}")
-                    # CORREÇÃO: A função enviar_email agora está DENTRO do if
                     enviar_email(linha['campeonato'], linha['adversario'])
                     jogo_encontrado = True
             
